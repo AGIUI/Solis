@@ -11,10 +11,15 @@
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import watchSelection from './watchSelection';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import ipc from './libs/ipc';
+
+let mouseDownPos = { x: 0, y: 0 }; // 记录鼠标按下的坐标
+let isMouseDown = false;
+let tray = null;
 
 class AppUpdater {
   constructor() {
@@ -97,6 +102,12 @@ const createWindow = async () => {
     }
   });
 
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('did-finish-load');
+    watchSelection(mainWindow)
+
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -118,6 +129,9 @@ const createWindow = async () => {
 /**
  * Add event listeners...
  */
+
+app.on('before-quit', () => {
+});
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even

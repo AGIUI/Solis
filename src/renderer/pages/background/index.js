@@ -85,10 +85,23 @@ function backgroundHandle() {
     }
   }
 
+  function clickHandle(evt) {
+    let srcEle = evt.target;
+    let nodeName = srcEle?.nodeName || '';
+    if (nodeName.toLocaleLowerCase() === 'a' && srcEle.href) {
+
+      window.electron.ipcRenderer.send('open_url', { url: srcEle.href });
+      evt.preventDefault();
+      evt.stopPropagation();
+    }
+  }
+
   window.addEventListener('message', evtHandle);
+  window.addEventListener('click', clickHandle);
 
   return () => {
     window.removeEventListener('message', evtHandle);
+    window.removeEventListener('click', clickHandle);
   };
 }
 

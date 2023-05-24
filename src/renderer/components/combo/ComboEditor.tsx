@@ -5,7 +5,7 @@ import {
   Typography,
   Tag,
   List,
-  Switch,
+  message,
   Divider,
   Empty,
 } from 'antd';
@@ -54,6 +54,10 @@ class ComboEditor extends React.Component {
   componentDidMount() {
     // this.setupConnection();
     // console.log('combo edtior')
+    this.comboFn = window.electron.ipcRenderer.on(
+      'importComboBack',
+      this.handleImport.bind(this)
+    );
   }
 
   componentDidUpdate(prevProps: any, prevState: any) {
@@ -71,6 +75,9 @@ class ComboEditor extends React.Component {
 
   componentWillUnmount() {
     // this.destroyConnection();
+    if (this.comboFn) {
+      this.comboFn();
+    }
   }
 
   _comboHandle(combo: any, from: string) {
@@ -131,25 +138,54 @@ class ComboEditor extends React.Component {
     const prompts = this.state.myPrompts.filter(
       (p: any) => p.owner != 'official'
     );
-    const data = JSON.stringify(prompts);
+    // const data = JSON.stringify(prompts);
+
+    window.electron.ipcRenderer.send('saveCombo', { data: prompts });
 
     // 通过创建a标签实现
-    const link = document.createElement('a');
-    // encodeURIComponent解决中文乱码
-    link.href = `data:application/json;charset=utf-8,\ufeff${encodeURIComponent(
-      data
-    )}`;
+    // const link = document.createElement('a');
+    // // encodeURIComponent解决中文乱码
+    // link.href = `data:application/json;charset=utf-8,\ufeff${encodeURIComponent(
+    //   data
+    // )}`;
 
-    // 对下载的文件命名
-    const jsonName = `my-combo-${new Date().getTime()}`;
-    link.download = jsonName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // // 对下载的文件命名
+    // const jsonName = `my-combo-${new Date().getTime()}`;
+    // link.download = jsonName;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+  }
+
+  handleImport(data: any) {
+    let json = data?.data || [];
+    let that = this;
+
+    chromeStorageGet(['user']).then((items: any) => {
+      let myPrompts = [...that.state.myPrompts];
+      let newUser: any = [];
+
+      if (items && items.user) {
+        newUser = [...items.user];
+      }
+
+      for (const n of json) {
+        let isNew = true;
+        if (newUser.filter((u: any) => u.id == n.id).length > 0) isNew = false;
+        if (isNew) {
+          newUser.push(n);
+          myPrompts.push(n);
+        }
+      }
+
+      chromeStorageSet({ user: newUser });
+
+      that.setState({ myPrompts });
+    });
   }
 
   _importMyCombo() {
-    console.log(this.state.myPrompts);
+    window.electron.ipcRenderer.send('importCombo');
   }
 
   render() {
@@ -203,7 +239,7 @@ class ComboEditor extends React.Component {
             flexDirection: 'column',
           }}
         >
-          <Text
+          {/* <Text
             style={{
               fontSize: 20,
               fontWeight: 'bold',
@@ -270,21 +306,24 @@ class ComboEditor extends React.Component {
             </List>
           ) : (
             <Empty style={{ marginTop: 100, marginBottom: 100 }} />
-          )}
+          )} */}
 
-          <Divider />
+          {/* <Divider /> */}
 
           <FlexRow display="flex">
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
               {this.state.secondTitle}
             </Text>
-            <DownloadButton
-              disabled={false}
-              callback={() => this._downloadMyCombo()}
-            />
-            {/* <OpenFileButton
-                            disabled={false}
-                            callback={() => this._importMyCombo()} /> */}
+            <div>
+              <DownloadButton
+                disabled={false}
+                callback={() => this._downloadMyCombo()}
+              />
+              <OpenFileButton
+                disabled={false}
+                callback={() => this._importMyCombo()}
+              />
+            </div>
           </FlexRow>
 
           {this.state.myPrompts.filter((p: any) => p.owner !== 'official')
