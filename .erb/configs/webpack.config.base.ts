@@ -3,12 +3,14 @@
  */
 
 import webpack from 'webpack';
+import CopyPlugin from 'copy-webpack-plugin';
+import path from 'path';
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin';
 import webpackPaths from './webpack.paths';
 import { dependencies as externals } from '../../release/app/package.json';
 
 const configuration: webpack.Configuration = {
-  externals: [...Object.keys(externals || {})],
+  externals: [...Object.keys(externals || {}), 'iohook'],
 
   stats: 'errors-only',
 
@@ -56,6 +58,14 @@ const configuration: webpack.Configuration = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     {
+    //       from: path.resolve(process.cwd(), 'assets/iohook'),
+    //       to: path.resolve(process.cwd(), 'release/app/dist/main/iohook'),
+    //     },
+    //   ],
+    // }),
   ],
 };
 

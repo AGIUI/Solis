@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Button } from 'antd';
+import _ from 'lodash';
 import styled from 'styled-components';
 import ChatBotConfig from './ChatBotConfig';
 import logoPNG from '@/assets/logo.png';
@@ -237,7 +238,7 @@ class ChatBotTalks extends React.Component {
   }
 
   componentDidUpdate(prevProps: { items: any }, prevState: any) {
-    if (this.props.items !== prevProps.items) {
+    if (!_.isEqual(this.props.items, prevProps.items)) {
       this.setState(
         {
           items: this._updateItems(),
