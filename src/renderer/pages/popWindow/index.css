@@ -1,0 +1,184 @@
+body {
+  padding: 0;
+  margin: 0;
+  background: none !important;
+  border-radius: 100px;
+
+  pointer-events: none;
+}
+
+html {
+  border-radius: 100px;
+  background: none;
+  pointer-events: none;
+}
+
+#root {
+  background: none;
+}
+
+.popPage {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(100% - 8px);
+  height: 50px;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 0 15px;
+  border-radius: 25px;
+  overflow: hidden;
+  background: rgb(238, 238, 238, 0.85);
+  border: 1px solid  rgb(238, 238, 238, 0.85);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  pointer-events: auto;
+  -webkit-app-region: drag;
+}
+
+.popPage.focus {
+  background: #fff;
+  border: 1px solid  rgba(0, 0, 0, 0.1);
+  /* box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1),
+    -1px -1px 1px 1px rgba(0, 0, 0, 0.1); */
+}
+
+.popPage .pt-list {
+  width: 50px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  color: #333;
+  -webkit-app-region: no-drag;
+}
+
+.popPage .txtInput {
+  -webkit-app-region: no-drag;
+  background: none;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 32px;
+  border: 25px;
+}
+
+.popPage .txtInput:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.popPage .txtInput:active {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.popPage .txtInput:hover {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.drop-item-img {
+  width: 16px;
+  height: 16px;
+}
+
+.selected-img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.drop-menu-selectbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  cursor: pointer;
+}
+
+.drop-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+  > img {
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+}
+.dbt_drop {
+  pointer-events: auto;
+}
+
+.dbt_drop .ant-dropdown-menu-item:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.dbt_drop .ant-dropdown-menu-item:active {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.dbt_drop .ant-dropdown-menu-item:hover {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.send-img {
+  -webkit-app-region: no-drag;
+  background: none;
+
+  color: #333;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 24px;
+  width: 24px;
+  cursor: pointer;
+}
+
+.btn-send {
+  -webkit-app-region: no-drag;
+  background: none;
+
+  color: #333;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.popPage .btn-send:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.popPage .btn-send:active {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.popPage .btn-send:hover {
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.btn-more {
+  margin-left: 10px;
+  color: #999;
+}
+.close-img {
+  margin-right: 5px;
+}

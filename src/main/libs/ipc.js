@@ -2,6 +2,7 @@ import { ipcMain, app, BrowserWindow, shell, dialog } from 'electron';
 import _ from 'lodash';
 import axios from 'axios';
 import fs from 'fs';
+
 function delay(ms) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -12,8 +13,15 @@ function delay(ms) {
 
 const processHandler = {
   async dbt_close_app() {
-    app.quit();
-    process.exit(0);
+    let mainWin = BrowserWindow.fromId(global.mainWindowId);
+    if (!mainWin) {
+      return;
+    }
+
+    mainWin.hide();
+
+    // app.quit();
+    // process.exit(0);
   },
   bing_login() {
     return new Promise((resolve, reject) => {
@@ -103,6 +111,57 @@ const processHandler = {
     }
 
     evt.reply('importComboBack', { data: json });
+  },
+  dbt_pop_search(evt, data) {
+    let mainWin = BrowserWindow.fromId(global.mainWindowId);
+    if (!mainWin) {
+      return;
+    }
+
+    mainWin.show();
+    mainWin.focus();
+    mainWin.webContents.send('dbt_pop_search', data);
+  },
+  dbt_pop_typechange(evt, data) {
+    let mainWin = BrowserWindow.fromId(global.mainWindowId);
+    if (!mainWin) {
+      return;
+    }
+
+    // mainWin.show();
+    // mainWin.focus();
+    mainWin.webContents.send('dbt_pop_typechange', data);
+  },
+  dbt_main_typechange(evt, data) {
+    let popWin = BrowserWindow.fromId(global.popWindowId);
+    if (!popWin) {
+      return;
+    }
+
+    // mainWin.show();
+    // mainWin.focus();
+    popWin.webContents.send('dbt_main_typechange', data);
+  },
+  dbt_pop_close(evt, data) {
+    let popWin = BrowserWindow.fromId(global.popWindowId);
+    if (!popWin) {
+      return;
+    }
+
+    popWin.hide();
+  },
+  click_through(evt, data) {
+    let flag = data?.flag || false;
+    let popWin = BrowserWindow.fromId(global.popWindowId);
+    if (!popWin) {
+      return;
+    }
+
+    if (flag) {
+      popWin.setIgnoreMouseEvents(true, { forward: true });
+    } else {
+      popWin.setIgnoreMouseEvents(false);
+    }
   },
 };
 

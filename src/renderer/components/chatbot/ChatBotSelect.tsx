@@ -112,7 +112,10 @@ class ChatBotSelect extends React.Component {
   }
 
   componentDidMount() {
-    console.log('ChatBotSelect componentDidMount');
+    this.popFn = window.electron.ipcRenderer.on(
+      'dbt_pop_typechange',
+      this.handleTypeChange
+    );
   }
 
   componentDidUpdate(prevProps: { isLoading: boolean }, prevState: any) {
@@ -123,12 +126,21 @@ class ChatBotSelect extends React.Component {
     }
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    if (this.popFn) {
+      this.popFn();
+    }
+  }
+
+  handleTypeChange = (data) => {
+    this._onChange(data.type);
+  };
 
   _onChange(type: string) {
     this.setState({
       type,
     });
+    window.electron.ipcRenderer.send('dbt_main_typechange', { type });
 
     const { label, value } = this._updateStyle(type);
 

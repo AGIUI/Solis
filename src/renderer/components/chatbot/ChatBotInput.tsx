@@ -98,6 +98,11 @@ class ChatBotInput extends React.Component {
       'win_selection_txt',
       this.handleSelection.bind(this)
     );
+
+    this.popFn = window.electron.ipcRenderer.on(
+      'dbt_pop_search',
+      this.handlePopSearch
+    );
   }
 
   componentDidUpdate(prevProps: any, prevState: any) {
@@ -118,14 +123,35 @@ class ChatBotInput extends React.Component {
     if (this.ipcFn) {
       this.ipcFn();
     }
+
+    if (this.popFn) {
+      this.popFn();
+    }
   }
+
+  handlePopSearch = (data: any) => {
+    if (!data?.text) {
+      return;
+    }
+
+    this.setState(
+      {
+        userInput: {
+          prompt: data?.text,
+          tag: data?.text,
+        },
+      },
+      () => {
+        this._sendBtnClick();
+      }
+    );
+  };
 
   handleSelection(data: any) {
     const text = data?.text || '';
 
     this.setState({
-      placeholder:
-        text.length > 0 ? text.trim() : 'Ask or search anything',
+      placeholder: text.length > 0 ? text.trim() : 'Ask or search anything',
       userSelected: text.length > 0,
     });
   }
@@ -177,6 +203,8 @@ class ChatBotInput extends React.Component {
         },
         combo: -1,
       };
+
+      console.log('userInputuserInputuserInput', userInput, combo);
       this.props.callback({
         cmd: 'send-talk',
         data: {
