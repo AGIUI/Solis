@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { getConfigFromUrl } from '@/components/Utils';
 import Main from './pages/content/Main';
+import PopWindow from './pages/popWindow';
 import backgroundHandle from './pages/background';
 
 import './App.css';
@@ -22,6 +23,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/pop" element={<PopWindow />} />
         <Route
           path="/"
           element={

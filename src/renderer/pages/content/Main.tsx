@@ -315,6 +315,7 @@ class Main extends React.Component<
       this.initChatBot();
     }
   }
+
   getNotionPrompts = (data, x) => {
     let xData = comboParse(data.results) || [];
     comboDataUpdate(xData);
@@ -1346,6 +1347,7 @@ class Main extends React.Component<
     return (
       <FlexColumn
         translate="no"
+        style={{ pointerEvents: 'auto' }}
         display={
           this.state.initIsOpen
             ? this.state.loading
